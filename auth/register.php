@@ -1,5 +1,6 @@
-<?php require "../includes/header.php"; ?>
 <?php require "../config/config.php"; ?>
+<?php require "../includes/header.php"; ?>
+
 
 <?php 
   if (isset($_POST['submit'])) {
@@ -15,6 +16,7 @@
 
         $username = $_POST['username'];
         $email = $_POST['email'];
+        $type = $_POST['type']; 
         $password = $_POST['password'];
         $repassword = $_POST['re-password'];
         $img = 'web-coding.png';
@@ -22,18 +24,19 @@
         if ($password === $repassword) {
 
             $insert = $conn->prepare("
-                INSERT INTO users (username, email, mypassword, img)
-                VALUES (:username, :email, :mypassword, :img)
+                INSERT INTO users (username, email, type, mypassword, img)
+                VALUES (:username, :email, :type, :mypassword, :img)
             ");
 
             $insert->execute([
                 ':username' => $username,
                 ':email' => $email,
+                ':type' => $type,
                 ':mypassword' => password_hash($password, PASSWORD_DEFAULT),
                 ':img' => $img
             ]);
 
-            echo "<div class='alert alert-success'>Registration successful</div>";
+            header("location: login.php");
 
         } else {
         echo "<div class='alert alert-danger'>Passwords do not match</div>";
@@ -49,7 +52,7 @@
           <div class="col-md-7">
             <h1 class="text-white font-weight-bold">Register</h1>
             <div class="custom-breadcrumbs">
-              <a href="#">Home</a> <span class="mx-2 slash">/</span>
+              <a href="<?php echo APPURL;?>">Home</a> <span class="mx-2 slash">/</span>
               <span class="text-white"><strong>Register</strong></span>
             </div>
           </div>
@@ -74,6 +77,13 @@
                   <label class="text-black" for="fname">Email</label>
                   <input type="text" id="fname" class="form-control" placeholder="Email address" name="email">
                 </div>
+              </div>
+              <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
+                  <select name="type" class="selectpicker" data-style="btn-white btn-lg" data-width="100%" data-live-search="true" title="Select User Type">
+                    <option>Worker</option>
+                    <option>Company</option>
+                    
+                  </select>
               </div>
               <div class="row form-group">
                 <div class="col-md-12 mb-3 mb-md-0">
